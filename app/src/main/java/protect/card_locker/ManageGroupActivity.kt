@@ -24,15 +24,15 @@ import protect.card_locker.databinding.ActivityManageGroupBinding
 class ManageGroupActivity : CatimaAppCompatActivity(), CardAdapterListener {
     private var binding: ActivityManageGroupBinding? = null
     private var mDatabase: SQLiteDatabase? = null
-    private var mAdapter: ManageGroupCursorAdapter? = null
+    private lateinit var mAdapter: ManageGroupCursorAdapter
 
     private val SAVE_INSTANCE_ADAPTER_STATE = "adapterState"
     private val SAVE_INSTANCE_CURRENT_GROUP_NAME = "currentGroupName"
 
-    protected var mGroup: Group? = null
-    private var mCardList: RecyclerView? = null
-    private var noGroupCardsText: TextView? = null
-    private var mGroupNameText: EditText? = null
+    protected lateinit var mGroup: Group
+    private lateinit var mCardList: RecyclerView
+    private lateinit var noGroupCardsText: TextView
+    private lateinit var mGroupNameText: EditText
 
     private var mGroupNameNotInUse = false
 
@@ -151,39 +151,36 @@ class ManageGroupActivity : CatimaAppCompatActivity(), CardAdapterListener {
         })
     }
 
-    private fun adapterStateToIntegerArray(adapterState: HashMap<Int?, Boolean?>): ArrayList<Int?> {
-        val ret = ArrayList<Int?>(adapterState.size * 2)
-        for (entry in adapterState.entries) {
-            ret.add(entry.key)
-            ret.add(if (entry.value == true) 1 else 0)
+    private fun adapterStateToIntegerArray(adapterState: HashMap<Int, Boolean>): ArrayList<Int> {
+        val ret = ArrayList<Int>(adapterState.size * 2)
+        for ((key, value) in adapterState) {
+            ret += key
+            ret += if (value) 1 else 0
         }
         return ret
     }
 
-    private fun integerArrayToAdapterState(`in`: ArrayList<Int?>): HashMap<Int?, Boolean?> {
-        val ret = HashMap<Int?, Boolean?>()
-        if (`in`.size % 2 != 0) {
-            throw (RuntimeException("failed restoring adapterState from integer array list"))
-        }
-        var i = 0
-        while (i < `in`.size) {
-            ret.put(`in`.get(i), `in`.get(i + 1) == 1)
-            i += 2
+    private fun integerArrayToAdapterState(list: ArrayList<Int>): HashMap<Int, Boolean> {
+        require(list.size % 2 == 0) { "failed restoring adapterState from integer array list" }
+
+        val ret = HashMap<Int, Boolean>()
+        for (i in list.indices step 2) {
+            ret[list[i]] = list[i+1] == 1
         }
         return ret
     }
 
     override fun onCreateOptionsMenu(inputMenu: Menu?): Boolean {
-        getMenuInflater().inflate(R.menu.card_details_menu, inputMenu)
+        menuInflater.inflate(R.menu.card_details_menu, inputMenu)
 
         return super.onCreateOptionsMenu(inputMenu)
     }
 
     override fun onOptionsItemSelected(inputItem: MenuItem): Boolean {
-        val id = inputItem.getItemId()
+        val id = inputItem.itemId
 
         if (id == R.id.action_display_options) {
-            mAdapter!!.showDisplayOptionsDialog()
+            mAdapter.showDisplayOptionsDialog()
             invalidateOptionsMenu()
 
             return true
@@ -196,37 +193,35 @@ class ManageGroupActivity : CatimaAppCompatActivity(), CardAdapterListener {
         super.onSaveInstanceState(outState)
 
         outState.putIntegerArrayList(
-            SAVE_INSTANCE_ADAPTER_STATE, adapterStateToIntegerArray(
-                mAdapter!!.exportInGroupState()
-            )
+            SAVE_INSTANCE_ADAPTER_STATE,
+            adapterStateToIntegerArray(mAdapter.exportInGroupState())
         )
-        outState.putString(SAVE_INSTANCE_CURRENT_GROUP_NAME, mGroupNameText!!.getText().toString())
+        outState.putString(SAVE_INSTANCE_CURRENT_GROUP_NAME, mGroupNameText.text.toString())
     }
 
     private fun updateLoyaltyCardList() {
-        mAdapter!!.swapCursor(DBHelper.getLoyaltyCardCursor(mDatabase))
+        mAdapter.swapCursor(DBHelper.getLoyaltyCardCursor(mDatabase))
 
-        if (mAdapter!!.getItemCount() == 0) {
-            mCardList!!.setVisibility(View.GONE)
-            noGroupCardsText!!.setVisibility(View.VISIBLE)
+        if (mAdapter.itemCount == 0) {
+            mCardList.visibility = View.GONE
+            noGroupCardsText.visibility = View.VISIBLE
         } else {
-            mCardList!!.setVisibility(View.VISIBLE)
-            noGroupCardsText!!.setVisibility(View.GONE)
+            mCardList.visibility = View.VISIBLE
+            noGroupCardsText.visibility = View.GONE
         }
     }
 
     private fun leaveWithoutSaving() {
         if (hasChanged()) {
-            val builder: AlertDialog.Builder = MaterialAlertDialogBuilder(this@ManageGroupActivity)
-            builder.setTitle(R.string.leaveWithoutSaveTitle)
-            builder.setMessage(R.string.leaveWithoutSaveConfirmation)
-            builder.setPositiveButton(
-                R.string.confirm,
-                DialogInterface.OnClickListener { dialog: DialogInterface?, which: Int -> finish() })
-            builder.setNegativeButton(
-                R.string.cancel,
-                DialogInterface.OnClickListener { dialog: DialogInterface?, which: Int -> dialog!!.dismiss() })
-            val dialog = builder.create()
+            val dialog = MaterialAlertDialogBuilder(this@ManageGroupActivity)
+
+            dialog.setTitle(R.string.leaveWithoutSaveTitle)
+                .setMessage(R.string.leaveWithoutSaveConfirmation)
+                .setPositiveButton(R.string.confirm) {
+                    dialogInterface, _ -> finish()
+                }.setNegativeButton(R.string.cancel) {
+                    dialogInterface, _ -> dialogInterface.dismiss()
+                }.create()
             dialog.show()
         } else {
             finish()
@@ -239,15 +234,14 @@ class ManageGroupActivity : CatimaAppCompatActivity(), CardAdapterListener {
     }
 
     private fun hasChanged(): Boolean {
-        return mAdapter!!.hasChanged() || mGroup!!._id != mGroupNameText!!.getText().toString()
-            .trim { it <= ' ' }
+        return mAdapter.hasChanged() || mGroup._id != mGroupNameText.text.toString().trim()
     }
 
     override fun onRowLongClicked(inputPosition: Int) {
-        mAdapter!!.toggleSelection(inputPosition)
+        mAdapter.toggleSelection(inputPosition)
     }
 
     override fun onRowClicked(inputPosition: Int) {
-        mAdapter!!.toggleSelection(inputPosition)
+        mAdapter.toggleSelection(inputPosition)
     }
 }
