@@ -30,7 +30,7 @@ class ManageGroupActivity : CatimaAppCompatActivity(), CardAdapterListener {
     private val SAVE_INSTANCE_ADAPTER_STATE = "adapterState"
     private val SAVE_INSTANCE_CURRENT_GROUP_NAME = "currentGroupName"
 
-    protected var mGroup: Group? = null
+    protected lateinit var mGroup: Group
     private lateinit var mCardList: RecyclerView
     private lateinit var noGroupCardsText: TextView
     private lateinit var mGroupNameText: EditText
@@ -230,20 +230,19 @@ class ManageGroupActivity : CatimaAppCompatActivity(), CardAdapterListener {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        getOnBackPressedDispatcher().onBackPressed()
+        onBackPressedDispatcher.onBackPressed()
         return true
     }
 
     private fun hasChanged(): Boolean {
-        return mAdapter!!.hasChanged() || mGroup!!._id != mGroupNameText!!.getText().toString()
-            .trim { it <= ' ' }
+        return mAdapter.hasChanged() || mGroup._id != mGroupNameText.text.toString().trim()
     }
 
     override fun onRowLongClicked(inputPosition: Int) {
-        mAdapter!!.toggleSelection(inputPosition)
+        mAdapter.toggleSelection(inputPosition)
     }
 
     override fun onRowClicked(inputPosition: Int) {
-        mAdapter!!.toggleSelection(inputPosition)
+        mAdapter.toggleSelection(inputPosition)
     }
 }
