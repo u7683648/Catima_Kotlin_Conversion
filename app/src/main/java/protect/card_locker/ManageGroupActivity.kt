@@ -64,13 +64,13 @@ class ManageGroupActivity : CatimaAppCompatActivity(), CardAdapterListener {
                 mGroupNameText.error = null
                 val currentGroupName = mGroupNameText.text.toString().trim { it <= ' ' }
                 if (currentGroupName.isEmpty()) {
-                    mGroupNameText.error = getResources().getText(R.string.group_name_is_empty)
+                    mGroupNameText.error = resources.getText(R.string.group_name_is_empty)
                     return
                 }
                 if (mGroup._id != currentGroupName) {
                     if (DBHelper.getGroup(mDatabase, currentGroupName) != null) {
                         mGroupNameNotInUse = false
-                        mGroupNameText.error = getResources().getText(R.string.group_name_already_in_use)
+                        mGroupNameText.error = resources.getText(R.string.group_name_already_in_use)
                     } else {
                         mGroupNameNotInUse = true
                     }
@@ -141,7 +141,7 @@ class ManageGroupActivity : CatimaAppCompatActivity(), CardAdapterListener {
             finish()
         })
         // this setText is here because content_main.xml is reused from main activity
-        noGroupCardsText.text = getResources().getText(R.string.noGiftCardsGroup)
+        noGroupCardsText.text = resources.getText(R.string.noGiftCardsGroup)
         updateLoyaltyCardList()
 
         this.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
