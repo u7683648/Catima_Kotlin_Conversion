@@ -214,16 +214,15 @@ class ManageGroupActivity : CatimaAppCompatActivity(), CardAdapterListener {
 
     private fun leaveWithoutSaving() {
         if (hasChanged()) {
-            val builder: AlertDialog.Builder = MaterialAlertDialogBuilder(this@ManageGroupActivity)
-            builder.setTitle(R.string.leaveWithoutSaveTitle)
-            builder.setMessage(R.string.leaveWithoutSaveConfirmation)
-            builder.setPositiveButton(
-                R.string.confirm,
-                DialogInterface.OnClickListener { dialog: DialogInterface?, which: Int -> finish() })
-            builder.setNegativeButton(
-                R.string.cancel,
-                DialogInterface.OnClickListener { dialog: DialogInterface?, which: Int -> dialog!!.dismiss() })
-            val dialog = builder.create()
+            val dialog = MaterialAlertDialogBuilder(this@ManageGroupActivity)
+
+            dialog.setTitle(R.string.leaveWithoutSaveTitle)
+                .setMessage(R.string.leaveWithoutSaveConfirmation)
+                .setPositiveButton(R.string.confirm) {
+                    dialogInterface, _ -> finish()
+                }.setNegativeButton(R.string.cancel) {
+                    dialogInterface, _ -> dialogInterface.dismiss()
+                }.create()
             dialog.show()
         } else {
             finish()
