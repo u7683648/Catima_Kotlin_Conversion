@@ -78,7 +78,6 @@ class ManageGroupActivity : CatimaAppCompatActivity(), CardAdapterListener {
             }
         })
 
-        val intent = getIntent()
         val groupId = intent.getStringExtra("group")
         if (groupId == null) {
             throw (IllegalArgumentException("this activity expects a group loaded into it's intent"))
