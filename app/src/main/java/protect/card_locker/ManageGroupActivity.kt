@@ -13,8 +13,7 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.OnBackPressedDispatcher.addCallback
-import androidx.activity.OnBackPressedDispatcher.onBackPressed
+import androidx.activity.OnBackPressedDispatcher // .addCallback, .onBackPressed
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.RecyclerView
@@ -112,7 +111,7 @@ class ManageGroupActivity : CatimaAppCompatActivity(), CardAdapterListener {
 
         enableToolbarBackButton()
 
-        saveButton.setOnClickListener(View.OnClickListener { v: View? ->
+        saveButton.setOnClickListener(View.OnClickListener setOnClickListener@{ v: View? ->
             val currentGroupName = mGroupNameText!!.getText().toString().trim { it <= ' ' }
             if (currentGroupName != mGroup!!._id) {
                 if (currentGroupName.length == 0) {
@@ -145,7 +144,7 @@ class ManageGroupActivity : CatimaAppCompatActivity(), CardAdapterListener {
         noGroupCardsText!!.setText(getResources().getText(R.string.noGiftCardsGroup))
         updateLoyaltyCardList()
 
-        getOnBackPressedDispatcher().addCallback(this, object : OnBackPressedCallback(true) {
+        this.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 leaveWithoutSaving()
             }
@@ -156,7 +155,7 @@ class ManageGroupActivity : CatimaAppCompatActivity(), CardAdapterListener {
         val ret = ArrayList<Int?>(adapterState.size * 2)
         for (entry in adapterState.entries) {
             ret.add(entry.key)
-            ret.add(if (entry.value) 1 else 0)
+            ret.add(if (entry.value == true) 1 else 0)
         }
         return ret
     }
@@ -235,7 +234,7 @@ class ManageGroupActivity : CatimaAppCompatActivity(), CardAdapterListener {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        getOnBackPressedDispatcher().onBackPressed()
+        this.onBackPressedDispatcher.onBackPressed()
         return true
     }
 
