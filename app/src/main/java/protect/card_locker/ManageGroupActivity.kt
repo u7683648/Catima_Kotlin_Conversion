@@ -22,7 +22,7 @@ import protect.card_locker.LoyaltyCardCursorAdapter.CardAdapterListener
 import protect.card_locker.databinding.ActivityManageGroupBinding
 
 class ManageGroupActivity : CatimaAppCompatActivity(), CardAdapterListener {
-    private var binding: ActivityManageGroupBinding? = null
+    private lateinit var binding: ActivityManageGroupBinding
     private var mDatabase: SQLiteDatabase? = null
     private lateinit var mAdapter: ManageGroupCursorAdapter
 
@@ -39,18 +39,18 @@ class ManageGroupActivity : CatimaAppCompatActivity(), CardAdapterListener {
     override fun onCreate(inputSavedInstanceState: Bundle?) {
         super.onCreate(inputSavedInstanceState)
         binding = ActivityManageGroupBinding.inflate(layoutInflater)
-        setContentView(binding!!.getRoot())
-        Utils.applyWindowInsetsAndFabOffset(binding!!.getRoot(), binding!!.fabSave)
-        val toolbar: Toolbar = binding!!.toolbar
+        setContentView(binding.root)
+        Utils.applyWindowInsetsAndFabOffset(binding.root, binding.fabSave)
+        val toolbar: Toolbar = binding.toolbar
         setSupportActionBar(toolbar)
 
         mDatabase = DBHelper(this).writableDatabase
 
-        noGroupCardsText = binding!!.include.noGroupCardsText
-        mCardList = binding!!.include.list
-        val saveButton = binding!!.fabSave
+        noGroupCardsText = binding.include.noGroupCardsText
+        mCardList = binding.include.list
+        val saveButton = binding.fabSave
 
-        mGroupNameText = binding!!.editTextGroupName
+        mGroupNameText = binding.editTextGroupName
 
         mGroupNameText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
