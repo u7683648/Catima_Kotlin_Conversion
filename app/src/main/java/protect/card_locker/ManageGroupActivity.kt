@@ -25,7 +25,7 @@ import protect.card_locker.databinding.ActivityManageGroupBinding
 class ManageGroupActivity : CatimaAppCompatActivity(), CardAdapterListener {
     private var binding: ActivityManageGroupBinding? = null
     private var mDatabase: SQLiteDatabase? = null
-    private var mAdapter: ManageGroupCursorAdapter? = null
+    private lateinit var mAdapter: ManageGroupCursorAdapter
 
     private val SAVE_INSTANCE_ADAPTER_STATE = "adapterState"
     private val SAVE_INSTANCE_CURRENT_GROUP_NAME = "currentGroupName"
@@ -172,16 +172,16 @@ class ManageGroupActivity : CatimaAppCompatActivity(), CardAdapterListener {
     }
 
     override fun onCreateOptionsMenu(inputMenu: Menu?): Boolean {
-        getMenuInflater().inflate(R.menu.card_details_menu, inputMenu)
+        menuInflater.inflate(R.menu.card_details_menu, inputMenu)
 
         return super.onCreateOptionsMenu(inputMenu)
     }
 
     override fun onOptionsItemSelected(inputItem: MenuItem): Boolean {
-        val id = inputItem.getItemId()
+        val id = inputItem.itemId
 
         if (id == R.id.action_display_options) {
-            mAdapter!!.showDisplayOptionsDialog()
+            mAdapter.showDisplayOptionsDialog()
             invalidateOptionsMenu()
 
             return true
