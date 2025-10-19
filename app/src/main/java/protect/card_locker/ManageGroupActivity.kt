@@ -38,13 +38,13 @@ class ManageGroupActivity : CatimaAppCompatActivity(), CardAdapterListener {
 
     override fun onCreate(inputSavedInstanceState: Bundle?) {
         super.onCreate(inputSavedInstanceState)
-        binding = ActivityManageGroupBinding.inflate(getLayoutInflater())
+        binding = ActivityManageGroupBinding.inflate(layoutInflater)
         setContentView(binding!!.getRoot())
         Utils.applyWindowInsetsAndFabOffset(binding!!.getRoot(), binding!!.fabSave)
         val toolbar: Toolbar = binding!!.toolbar
         setSupportActionBar(toolbar)
 
-        mDatabase = DBHelper(this).getWritableDatabase()
+        mDatabase = DBHelper(this).writableDatabase
 
         noGroupCardsText = binding!!.include.noGroupCardsText
         mCardList = binding!!.include.list
@@ -52,7 +52,7 @@ class ManageGroupActivity : CatimaAppCompatActivity(), CardAdapterListener {
 
         mGroupNameText = binding!!.editTextGroupName
 
-        mGroupNameText!!.addTextChangedListener(object : TextWatcher {
+        mGroupNameText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
 
@@ -61,16 +61,16 @@ class ManageGroupActivity : CatimaAppCompatActivity(), CardAdapterListener {
 
             override fun afterTextChanged(s: Editable?) {
                 mGroupNameNotInUse = true
-                mGroupNameText!!.setError(null)
-                val currentGroupName = mGroupNameText!!.getText().toString().trim { it <= ' ' }
-                if (currentGroupName.length == 0) {
-                    mGroupNameText!!.setError(getResources().getText(R.string.group_name_is_empty))
+                mGroupNameText.error = null
+                val currentGroupName = mGroupNameText.text.toString().trim { it <= ' ' }
+                if (currentGroupName.isEmpty()) {
+                    mGroupNameText.error = getResources().getText(R.string.group_name_is_empty)
                     return
                 }
-                if (mGroup!!._id != currentGroupName) {
+                if (mGroup._id != currentGroupName) {
                     if (DBHelper.getGroup(mDatabase, currentGroupName) != null) {
                         mGroupNameNotInUse = false
-                        mGroupNameText!!.setError(getResources().getText(R.string.group_name_already_in_use))
+                        mGroupNameText.error = getResources().getText(R.string.group_name_already_in_use)
                     } else {
                         mGroupNameNotInUse = true
                     }
@@ -83,26 +83,26 @@ class ManageGroupActivity : CatimaAppCompatActivity(), CardAdapterListener {
         if (groupId == null) {
             throw (IllegalArgumentException("this activity expects a group loaded into it's intent"))
         }
-        Log.d("groupId", "groupId: " + groupId)
+        Log.d("groupId", "groupId: $groupId")
         mGroup = DBHelper.getGroup(mDatabase, groupId)
         if (mGroup == null) {
-            throw (IllegalArgumentException("cannot load group " + groupId + " from database"))
+            throw (IllegalArgumentException("cannot load group $groupId from database"))
         }
-        mGroupNameText!!.setText(mGroup!!._id)
-        setTitle(getString(R.string.editGroup, mGroup!!._id))
+        mGroupNameText.setText(mGroup._id)
+        title = getString(R.string.editGroup, mGroup._id)
         mAdapter = ManageGroupCursorAdapter(this, null, this, mGroup, null)
-        mCardList!!.setAdapter(mAdapter)
+        mCardList.setAdapter(mAdapter)
         registerForContextMenu(mCardList)
 
         if (inputSavedInstanceState != null) {
-            mAdapter!!.importInGroupState(
+            mAdapter.importInGroupState(
                 integerArrayToAdapterState(
                     inputSavedInstanceState.getIntegerArrayList(
                         SAVE_INSTANCE_ADAPTER_STATE
                     )!!
                 )
             )
-            mGroupNameText!!.setText(
+            mGroupNameText.setText(
                 inputSavedInstanceState.getString(
                     SAVE_INSTANCE_CURRENT_GROUP_NAME
                 )
@@ -112,11 +112,11 @@ class ManageGroupActivity : CatimaAppCompatActivity(), CardAdapterListener {
         enableToolbarBackButton()
 
         saveButton.setOnClickListener(View.OnClickListener setOnClickListener@{ v: View? ->
-            val currentGroupName = mGroupNameText!!.getText().toString().trim { it <= ' ' }
-            if (currentGroupName != mGroup!!._id) {
-                if (currentGroupName.length == 0) {
+            val currentGroupName = mGroupNameText.getText().toString().trim { it <= ' ' }
+            if (currentGroupName != mGroup._id) {
+                if (currentGroupName.isEmpty()) {
                     Toast.makeText(
-                        getApplicationContext(),
+                        applicationContext,
                         R.string.group_name_is_empty,
                         Toast.LENGTH_SHORT
                     ).show()
@@ -132,16 +132,16 @@ class ManageGroupActivity : CatimaAppCompatActivity(), CardAdapterListener {
                 }
             }
 
-            mAdapter!!.commitToDatabase()
-            if (currentGroupName != mGroup!!._id) {
-                DBHelper.updateGroup(mDatabase, mGroup!!._id, currentGroupName)
+            mAdapter.commitToDatabase()
+            if (currentGroupName != mGroup._id) {
+                DBHelper.updateGroup(mDatabase, mGroup._id, currentGroupName)
             }
-            Toast.makeText(getApplicationContext(), R.string.group_updated, Toast.LENGTH_SHORT)
+            Toast.makeText(applicationContext, R.string.group_updated, Toast.LENGTH_SHORT)
                 .show()
             finish()
         })
         // this setText is here because content_main.xml is reused from main activity
-        noGroupCardsText!!.setText(getResources().getText(R.string.noGiftCardsGroup))
+        noGroupCardsText.text = getResources().getText(R.string.noGiftCardsGroup)
         updateLoyaltyCardList()
 
         this.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
