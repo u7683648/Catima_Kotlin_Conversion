@@ -31,9 +31,9 @@ class ManageGroupActivity : CatimaAppCompatActivity(), CardAdapterListener {
     private val SAVE_INSTANCE_CURRENT_GROUP_NAME = "currentGroupName"
 
     protected var mGroup: Group? = null
-    private var mCardList: RecyclerView? = null
-    private var noGroupCardsText: TextView? = null
-    private var mGroupNameText: EditText? = null
+    private lateinit var mCardList: RecyclerView
+    private lateinit var noGroupCardsText: TextView
+    private lateinit var mGroupNameText: EditText
 
     private var mGroupNameNotInUse = false
 
@@ -194,22 +194,21 @@ class ManageGroupActivity : CatimaAppCompatActivity(), CardAdapterListener {
         super.onSaveInstanceState(outState)
 
         outState.putIntegerArrayList(
-            SAVE_INSTANCE_ADAPTER_STATE, adapterStateToIntegerArray(
-                mAdapter!!.exportInGroupState()
-            )
+            SAVE_INSTANCE_ADAPTER_STATE,
+            adapterStateToIntegerArray(mAdapter.exportInGroupState())
         )
-        outState.putString(SAVE_INSTANCE_CURRENT_GROUP_NAME, mGroupNameText!!.getText().toString())
+        outState.putString(SAVE_INSTANCE_CURRENT_GROUP_NAME, mGroupNameText.text.toString())
     }
 
     private fun updateLoyaltyCardList() {
-        mAdapter!!.swapCursor(DBHelper.getLoyaltyCardCursor(mDatabase))
+        mAdapter.swapCursor(DBHelper.getLoyaltyCardCursor(mDatabase))
 
-        if (mAdapter!!.getItemCount() == 0) {
-            mCardList!!.setVisibility(View.GONE)
-            noGroupCardsText!!.setVisibility(View.VISIBLE)
+        if (mAdapter.itemCount == 0) {
+            mCardList.visibility = View.GONE
+            noGroupCardsText.visibility = View.VISIBLE
         } else {
-            mCardList!!.setVisibility(View.VISIBLE)
-            noGroupCardsText!!.setVisibility(View.GONE)
+            mCardList.visibility = View.VISIBLE
+            noGroupCardsText.visibility = View.GONE
         }
     }
 
