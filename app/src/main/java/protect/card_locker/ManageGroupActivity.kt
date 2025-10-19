@@ -112,7 +112,7 @@ class ManageGroupActivity : CatimaAppCompatActivity(), CardAdapterListener {
         enableToolbarBackButton()
 
         saveButton.setOnClickListener(View.OnClickListener setOnClickListener@{ v: View? ->
-            val currentGroupName = mGroupNameText.getText().toString().trim { it <= ' ' }
+            val currentGroupName = mGroupNameText.text.toString().trim { it <= ' ' }
             if (currentGroupName != mGroup._id) {
                 if (currentGroupName.isEmpty()) {
                     Toast.makeText(
@@ -124,7 +124,7 @@ class ManageGroupActivity : CatimaAppCompatActivity(), CardAdapterListener {
                 }
                 if (!mGroupNameNotInUse) {
                     Toast.makeText(
-                        getApplicationContext(),
+                        applicationContext,
                         R.string.group_name_already_in_use,
                         Toast.LENGTH_SHORT
                     ).show()
