@@ -152,24 +152,21 @@ class ManageGroupActivity : CatimaAppCompatActivity(), CardAdapterListener {
         })
     }
 
-    private fun adapterStateToIntegerArray(adapterState: HashMap<Int?, Boolean?>): ArrayList<Int?> {
-        val ret = ArrayList<Int?>(adapterState.size * 2)
-        for (entry in adapterState.entries) {
-            ret.add(entry.key)
-            ret.add(if (entry.value) 1 else 0)
+    private fun adapterStateToIntegerArray(adapterState: HashMap<Int, Boolean>): ArrayList<Int> {
+        val ret = ArrayList<Int>(adapterState.size * 2)
+        for ((key, value) in adapterState) {
+            ret += key
+            ret += if (value) 1 else 0
         }
         return ret
     }
 
-    private fun integerArrayToAdapterState(`in`: ArrayList<Int?>): HashMap<Int?, Boolean?> {
-        val ret = HashMap<Int?, Boolean?>()
-        if (`in`.size % 2 != 0) {
-            throw (RuntimeException("failed restoring adapterState from integer array list"))
-        }
-        var i = 0
-        while (i < `in`.size) {
-            ret.put(`in`.get(i), `in`.get(i + 1) == 1)
-            i += 2
+    private fun integerArrayToAdapterState(list: ArrayList<Int>): HashMap<Int, Boolean> {
+        require(list.size % 2 == 0) { "failed restoring adapterState from integer array list" }
+
+        val ret = HashMap<Int, Boolean>()
+        for (i in list.indices step 2) {
+            ret[list[i]] = list[i+1] == 1
         }
         return ret
     }
