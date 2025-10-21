@@ -84,7 +84,7 @@ internal class LetterBitmap(
 
         Log.d(
             "LetterBitmap",
-            "using sequence " + firstChar + " to render first char which has length " + firstChar.length
+            "using sequence $firstChar to render first char which has length ${firstChar.length}"
         )
 
         val c = Canvas()
