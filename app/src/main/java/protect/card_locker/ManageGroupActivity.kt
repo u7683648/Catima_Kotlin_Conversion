@@ -1,6 +1,5 @@
 package protect.card_locker
 
-import android.content.DialogInterface
 import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
 import android.text.Editable
@@ -13,8 +12,6 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.OnBackPressedDispatcher // .addCallback, .onBackPressed
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
