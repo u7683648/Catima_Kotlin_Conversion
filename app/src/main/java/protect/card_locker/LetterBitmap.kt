@@ -13,21 +13,20 @@ import android.util.Log
 import androidx.core.graphics.PaintCompat
 import java.util.Locale
 import kotlin.math.abs
-import androidx.core.graphics.createBitmap
 
 /**
  * Original from https://github.com/andOTP/andOTP/blob/master/app/src/main/java/org/shadowice/flocke/andotp/Utilities/LetterBitmap.java
  * which was originally from http://stackoverflow.com/questions/23122088/colored-boxed-with-letters-a-la-gmail
- * Used to create a [Bitmap] that contains a letter used in the English
+ * Used to create a {@link Bitmap} that contains a letter used in the English
  * alphabet or digit, if there is no letter or digit available, a default image
  * is shown instead.
  */
-internal class LetterBitmap(
+class LetterBitmap(
     context: Context, displayName: String, key: String, tileLetterFontSize: Int,
     width: Int, height: Int, backgroundColor: Int?, textColor: Int?
 ) {
     /**
-     * @return A [Bitmap] that contains a letter used in the English
+     * @return A {@link Bitmap} that contains a letter used in the English
      * alphabet or digit, if there is no letter or digit available, a
      * default image is shown instead
      */
@@ -39,12 +38,12 @@ internal class LetterBitmap(
     /**
      * The background color of the letter bitmap
      */
-    private val mColor: Int?
+    private val mColor: Int
 
     /**
      * Constructor for `LetterTileProvider`
      *
-     * @param context            The [Context] to use
+     * @param context            The {@link Context} to use
      * @param displayName        The name used to create the letter for the tile
      * @param key                The key used to generate the background color for the tile
      * @param tileLetterFontSize The font size used to display the letter
@@ -54,22 +53,18 @@ internal class LetterBitmap(
      * @param textColor          (optional) color to use for text.
      */
     init {
-        val paint = TextPaint()
-
-        if (textColor != null) {
-            paint.color = textColor
-        } else {
-            paint.color = Color.WHITE
+        val paint = TextPaint().apply {
+            color = textColor ?: Color.WHITE
+            textAlign = Paint.Align.CENTER
+            isAntiAlias = true
+            textSize = tileLetterFontSize.toFloat()
+            typeface = Typeface.defaultFromStyle(Typeface.BOLD)
         }
-
-        paint.textAlign = Paint.Align.CENTER
-        paint.isAntiAlias = true
-        paint.textSize = tileLetterFontSize.toFloat()
-        paint.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
 
         mColor = backgroundColor ?: getDefaultColor(context, key)
 
-        this.letterTile = createBitmap(width, height)
+        this.letterTile = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+
         var firstChar = displayName.substring(0, 1).uppercase(Locale.getDefault())
         var firstCharEnd = 2
         while (firstCharEnd <= displayName.length) {
@@ -87,25 +82,26 @@ internal class LetterBitmap(
             "using sequence $firstChar to render first char which has length ${firstChar.length}"
         )
 
-        val c = Canvas()
-        c.setBitmap(this.letterTile)
-        c.drawColor(mColor)
+        Canvas().apply {
+            setBitmap(this@LetterBitmap.letterTile)
+            drawColor(mColor)
 
-        val bounds = Rect()
-        paint.getTextBounds(firstChar, 0, firstChar.length, bounds)
-        c.drawText(
-            firstChar,
-            0, firstChar.length,
-            width / 2.0f, (height - (bounds.bottom + bounds.top)) / 2.0f,
-            paint
-        )
+            val bounds = Rect()
+            paint.getTextBounds(firstChar, 0, firstChar.length, bounds)
+            drawText(
+                firstChar,
+                0, firstChar.length,
+                width / 2.0f, (height - (bounds.bottom + bounds.top)) / 2.0f,
+                paint
+            )
+        }
     }
 
     val backgroundColor: Int
         /**
          * @return background color used for letter title.
          */
-        get() = mColor ?: Color.GRAY
+        get() = mColor
 
     companion object {
         /**
