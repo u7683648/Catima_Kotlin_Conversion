@@ -26,12 +26,9 @@ class LetterBitmap(
     width: Int, height: Int, backgroundColor: Int?, textColor: Int?
 ) {
     /**
-     * @return A {@link Bitmap} that contains a letter used in the English
+     * A {@link Bitmap} that contains a letter used in the English
      * alphabet or digit, if there is no letter or digit available, a
      * default image is shown instead
-     */
-    /**
-     * The letter bitmap
      */
     val letterTile: Bitmap
 
