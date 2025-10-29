@@ -21,7 +21,7 @@ import kotlin.math.abs
  * alphabet or digit, if there is no letter or digit available, a default image
  * is shown instead.
  *
- * @constructor Constructor for `LetterTileProvider`
+ * @constructor Constructor for <code>LetterTileProvider</code>
  * @param context            The {@link Context} to use
  * @param displayName        The name used to create the letter for the tile
  * @param key                The key used to generate the background color for the tile
