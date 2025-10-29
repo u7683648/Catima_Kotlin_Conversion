@@ -40,7 +40,7 @@ class LetterBitmap(
      * alphabet or digit, if there is no letter or digit available, a
      * default image is shown instead
      */
-    val letterTile: Bitmap
+    private val letterTile: Bitmap
 
     /**
      * The background color of the letter bitmap
