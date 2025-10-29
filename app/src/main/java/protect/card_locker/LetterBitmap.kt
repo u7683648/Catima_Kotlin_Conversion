@@ -20,6 +20,16 @@ import kotlin.math.abs
  * Used to create a {@link Bitmap} that contains a letter used in the English
  * alphabet or digit, if there is no letter or digit available, a default image
  * is shown instead.
+ *
+ * @constructor Constructor for `LetterTileProvider`
+ * @param context            The {@link Context} to use
+ * @param displayName        The name used to create the letter for the tile
+ * @param key                The key used to generate the background color for the tile
+ * @param tileLetterFontSize The font size used to display the letter
+ * @param width              The desired width of the tile
+ * @param height             The desired height of the tile
+ * @param backgroundColor    (optional) color to use for background.
+ * @param textColor          (optional) color to use for text.
  */
 class LetterBitmap(
     context: Context, displayName: String, key: String, tileLetterFontSize: Int,
@@ -37,18 +47,6 @@ class LetterBitmap(
      */
     private val mColor: Int
 
-    /**
-     * Constructor for `LetterTileProvider`
-     *
-     * @param context            The {@link Context} to use
-     * @param displayName        The name used to create the letter for the tile
-     * @param key                The key used to generate the background color for the tile
-     * @param tileLetterFontSize The font size used to display the letter
-     * @param width              The desired width of the tile
-     * @param height             The desired height of the tile
-     * @param backgroundColor    (optional) color to use for background.
-     * @param textColor          (optional) color to use for text.
-     */
     init {
         val paint = TextPaint().apply {
             color = textColor ?: Color.WHITE
